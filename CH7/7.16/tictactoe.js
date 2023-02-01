@@ -73,16 +73,68 @@ function checkForWinner() {
 
 function newGame() {
 	// TODO: Complete the function
+	clearTimeout(computerMoveTimeout);
+	computerMoveTimeout = 0;
+	const buttons = getGameBoardButtons();
+	for(let button of buttons) {
+		button.innerHTML = "";
+		button.className = "";
+		button.removeAttribute("disabled");
+	}
+	playerTurn = true;
+	document.getElementById("turnInfo").innerHTML = "Your turn";
 }
 
 function boardButtonClicked(button) {
 	// TODO: Complete the function
+	if(playerTurn) {
+		button.innerHTML = "X";
+		button.className = "x";
+		button.disabled = true;
+		switchTurn();
+	}
 }
 
 function switchTurn() {
 	// TODO: Complete the function
+	let gameStatus = checkForWinner();
+	playerTurn = !playerTurn;
+	//more moves left
+	if(gameStatus == 1) {
+		if(!playerTurn) {
+			computerMoveTimeout = setTimeout(makeComputerMove, 1000);
+		}
+		
+		if(playerTurn) {
+			document.getElementById("turnInfo").textContent = "Your turn";
+		} else {
+			document.getElementById("turnInfo").textContent = "Computer's turn";
+		}
+	} else {
+		//document.writeln(gameStatus);
+		playerTurn = false;
+		if(gameStatus === 2) { //human won
+			document.getElementById("turnInfo").textContent = "You win!";
+		} else if(gameStatus === 3) { //computer won
+			document.getElementById("turnInfo").textContent = "Computer wins!";
+		} else { //tie game
+			document.getElementById("turnInfo").textContent = "Draw game";
+		}
+	}
 }
 
 function makeComputerMove() {
 	// TODO: Complete the function
+	const buttons = Array.from(getGameBoardButtons());
+	const availableButtons = buttons.filter(button => !button.disabled);
+	if (availableButtons.length > 0) {
+		const randomIndex = Math.floor(Math.random() * availableButtons.length);
+		const randomButton = availableButtons[randomIndex];
+		
+		randomButton.innerHTML = "O";
+		randomButton.classList.add("o");
+		randomButton.disabled = true;
+		
+		switchTurn();
+	}
 }
