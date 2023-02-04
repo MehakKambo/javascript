@@ -13,15 +13,26 @@ window.addEventListener("DOMContentLoaded", function () {
 });
 
 function fetchQuotes(topic, count) {
-   // TODO: Modify to use XMLHttpRequest
-
-   let html = "<ol>";
-   for (let c = 1; c <= count; c++) {
-      html += `<li>Quote ${c} - Anonymous</li>`;
-   }
-   html += "</ol>";
-
-   document.querySelector("#quotes").innerHTML = html;
+   /* Your solution goes here */
+   let xhr = new XMLHttpRequest();
+   xhr.responseType = "json";
+   xhr.addEventListener("load", responseReceivedHandler);
+   xhr.open("GET", `https://wp.zybooks.com/quotes.php?topic=${topic}&count=${count}`);
+   xhr.send();
 }
 
-// TODO: Add responseReceivedHandler() here
+function responseReceivedHandler() {
+   /* Your solution goes here */
+   let quotes = this.response;
+   let quotesDiv = document.getElementById("quotes");
+   if(quotes.error) {
+      quotesDiv.innerHTML = this.response.error;
+   } else {
+      let quotesList = "<ol>";
+      for (let i = 0; i < quotes.length; i++) {
+         quotesList += `<li>${quotes[i].quote} - ${quotes[i].source}</li>`;
+      }
+      quotesList += "</ol>";
+      quotesDiv.innerHTML = quotesList;
+   }
+}
