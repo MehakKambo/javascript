@@ -4,7 +4,11 @@ window.addEventListener("DOMContentLoaded", function () {
 
 function showCircleClick() {
    // TODO: Add modifications here
-   showCircle(160, 180, 120);
+   showCircle(160, 180, 120).then((div) => {
+      div.innerHTML = "Ta da!";
+   }).catch((error) => {
+      alert(error);
+   });
 }
 
 // Do not modify the code below
